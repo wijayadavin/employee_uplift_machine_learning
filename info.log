@@ -1,0 +1,1518 @@
+[2020-02-29 13:15:15,057|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:15,081|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 13:15:15,089|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:15,091|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:15,095|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:15,113|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 13:15:15,142|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 13:15:15,146|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 13:15:15,149|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 13:15:15,152|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 13:15:15,155|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 13:15:15,157|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:15,162|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:15,180|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 13:15:15,186|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 13:15:17,428|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 13:15:17,463|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:17,464|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:17,477|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:17,498|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 13:15:17,535|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:17,537|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:17,542|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:17,560|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 13:15:17,562|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 13:15:17,961|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 13:15:18,006|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 13:15:18,009|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 13:15:18,010|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 13:15:18,458|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 13:15:18,509|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 13:15:18,516|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 13:15:18,522|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 13:15:18,523|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:18,537|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:18,556|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 13:15:18,573|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 13:15:18,583|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 13:15:18,599|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 13:15:18,602|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:18,605|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:18,620|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 13:15:18,624|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:18,625|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:18,627|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:18,643|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 13:15:18,649|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:18,651|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:18,655|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:18,672|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 13:15:18,733|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:18,735|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:18,771|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:18,808|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 13:15:18,856|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 13:15:18,887|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 13:15:18,931|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 13:15:18,933|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:15:18,954|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 13:15:18,974|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 13:15:18,984|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:15:18,985|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:17:57,460|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 13:17:57,474|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 13:17:57,482|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 13:17:57,484|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:17:57,487|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 13:17:57,499|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 13:17:57,523|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 13:17:57,525|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 13:17:57,528|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 13:17:57,531|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 13:17:57,532|causallift.nodes.estimate_propensity|INFO] Skip estimation of propensity score because Propensity column found in the data frame. 
+[2020-02-29 13:17:57,534|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 13:17:57,535|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 13:17:57,539|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 13:17:57,540|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 14:54:25,745|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:25,758|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 14:54:25,767|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:25,768|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:25,773|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:25,787|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 14:54:25,808|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 14:54:25,811|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 14:54:25,814|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 14:54:25,817|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 14:54:25,819|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 14:54:25,820|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:25,823|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:25,840|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 14:54:25,845|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 14:54:25,847|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 14:54:28,315|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 14:54:28,317|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 14:54:28,353|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:28,354|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:28,364|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:28,378|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 14:54:28,390|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 14:54:28,639|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 14:54:28,669|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 14:54:28,681|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 14:54:28,705|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:28,707|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:28,710|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 14:54:28,712|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 14:54:28,716|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:28,734|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 14:54:28,735|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 14:54:29,038|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 14:54:29,053|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 14:54:29,099|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 14:54:29,126|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 14:54:29,130|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 14:54:29,131|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 14:54:29,331|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 14:54:29,346|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 14:54:29,390|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 14:54:29,414|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 14:54:29,424|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 14:54:29,430|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 14:54:29,432|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,447|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:29,468|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 14:54:29,485|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 14:54:29,492|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 14:54:29,511|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 14:54:29,512|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,515|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:29,530|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 14:54:29,533|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:29,535|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,539|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:29,557|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 14:54:29,562|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:29,564|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,568|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:29,585|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 14:54:29,647|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:29,649|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,685|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:29,726|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 14:54:29,763|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 14:54:29,786|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 14:54:29,811|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 14:54:29,849|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 14:54:29,870|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 14:54:29,872|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,889|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 14:54:29,908|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 14:54:29,918|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:54:29,919|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:54:29,929|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 14:54:29,939|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 14:56:04,733|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:04,748|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 14:56:04,756|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:04,757|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:04,761|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:04,777|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 14:56:04,800|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 14:56:04,803|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 14:56:04,806|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 14:56:04,809|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 14:56:04,812|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 14:56:04,813|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:04,817|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:04,829|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 14:56:04,835|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 14:56:04,837|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 14:56:04,958|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 14:56:04,959|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 14:56:04,984|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:04,985|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:04,996|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:05,010|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 14:56:05,021|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 14:56:05,279|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 14:56:05,315|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 14:56:05,325|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 14:56:05,347|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:05,349|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:05,354|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 14:56:05,356|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 14:56:05,360|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:05,380|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 14:56:05,381|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 14:56:05,651|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 14:56:05,672|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 14:56:05,710|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 14:56:05,732|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 14:56:05,735|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 14:56:05,738|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 14:56:05,951|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 14:56:05,967|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 14:56:06,010|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 14:56:06,030|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 14:56:06,039|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 14:56:06,044|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 14:56:06,046|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,057|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:06,080|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 14:56:06,101|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 14:56:06,109|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 14:56:06,123|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 14:56:06,124|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,127|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:06,139|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 14:56:06,142|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:06,143|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,146|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:06,158|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 14:56:06,163|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:06,164|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,169|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:06,183|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 14:56:06,234|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:06,235|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,264|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:06,295|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 14:56:06,330|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 14:56:06,350|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 14:56:06,377|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 14:56:06,410|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 14:56:06,431|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 14:56:06,432|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,442|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 14:56:06,462|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 14:56:06,472|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:56:06,474|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:56:06,480|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 14:56:06,490|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 14:59:39,259|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:39,273|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 14:59:39,280|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:39,282|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:39,287|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:39,301|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 14:59:39,303|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 14:59:39,306|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 14:59:39,330|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 14:59:39,333|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 14:59:39,336|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 14:59:39,337|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:39,344|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:39,360|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 14:59:39,366|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 14:59:39,368|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 14:59:41,867|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 14:59:41,869|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 14:59:41,899|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:41,901|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:41,910|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:41,924|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 14:59:41,934|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 14:59:42,222|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 14:59:42,257|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 14:59:42,270|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 14:59:42,296|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:42,297|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:42,300|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 14:59:42,301|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 14:59:42,305|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:42,326|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 14:59:42,327|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 14:59:42,556|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 14:59:42,577|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 14:59:42,613|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 14:59:42,629|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 14:59:42,632|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 14:59:42,633|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 14:59:42,904|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 14:59:42,921|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 14:59:42,966|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 14:59:42,982|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 14:59:42,991|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 14:59:42,996|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 14:59:42,998|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,013|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:43,032|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 14:59:43,048|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 14:59:43,055|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 14:59:43,074|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 14:59:43,075|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,079|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:43,095|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 14:59:43,099|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:43,100|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,103|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:43,118|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 14:59:43,123|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:43,125|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,131|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:43,145|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 14:59:43,205|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:43,206|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,235|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:43,269|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 14:59:43,310|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 14:59:43,335|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 14:59:43,369|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 14:59:43,415|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 14:59:43,445|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 14:59:43,447|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,457|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 14:59:43,475|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 14:59:43,485|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 14:59:43,487|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 14:59:43,494|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 14:59:43,507|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 16:53:48,685|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:48,701|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 16:53:48,711|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:48,713|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:48,716|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:48,734|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 16:53:48,757|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 16:53:48,760|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 16:53:48,763|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 16:53:48,765|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 16:53:48,768|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 16:53:48,770|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:48,776|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:48,792|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 16:53:48,797|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 16:53:48,799|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 16:53:51,420|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 16:53:51,422|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 16:53:51,455|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:51,457|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:51,466|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:51,480|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 16:53:51,492|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 16:53:51,776|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 16:53:51,808|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 16:53:51,816|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 16:53:51,840|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:51,842|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:51,845|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 16:53:51,846|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 16:53:51,850|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:51,868|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 16:53:51,869|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 16:53:52,107|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 16:53:52,129|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 16:53:52,166|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 16:53:52,183|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 16:53:52,186|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 16:53:52,187|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 16:53:52,437|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 16:53:52,458|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 16:53:52,499|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 16:53:52,517|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 16:53:52,524|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 16:53:52,529|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 16:53:52,530|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,544|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:52,565|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 16:53:52,579|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 16:53:52,589|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 16:53:52,609|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 16:53:52,610|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,613|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:52,624|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 16:53:52,627|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:52,628|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,630|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:52,644|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 16:53:52,649|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:52,650|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,657|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:52,671|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 16:53:52,733|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:52,735|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,764|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:52,796|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 16:53:52,832|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 16:53:52,853|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 16:53:52,876|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 16:53:52,913|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 16:53:52,938|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 16:53:52,939|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,958|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 16:53:52,979|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 16:53:52,986|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 16:53:52,988|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 16:53:52,996|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 16:53:53,006|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 16:54:11,376|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 16:54:15,010|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 16:54:15,015|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 16:54:15,021|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 16:54:15,026|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 16:54:15,031|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:26:09,479|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:09,498|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 17:26:09,508|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:09,509|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:09,514|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:09,526|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 17:26:09,553|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:26:09,556|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 17:26:09,558|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:26:09,562|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 17:26:09,565|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:26:09,567|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:09,570|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:09,587|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 17:26:09,593|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 17:26:09,594|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 17:26:11,915|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 17:26:11,917|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 17:26:11,951|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:11,953|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:11,963|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:11,978|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 17:26:11,993|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 17:26:12,273|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 17:26:12,303|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 17:26:12,314|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 17:26:12,336|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:12,337|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:12,340|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 17:26:12,341|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 17:26:12,345|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:12,365|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 17:26:12,367|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 17:26:12,595|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:26:12,610|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:26:12,648|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:26:12,665|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:26:12,669|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 17:26:12,671|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 17:26:12,958|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:26:12,971|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:26:13,012|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:26:13,031|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:26:13,041|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 17:26:13,046|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:26:13,048|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,061|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:13,081|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 17:26:13,096|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:26:13,104|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 17:26:13,120|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:26:13,121|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,125|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:13,137|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 17:26:13,140|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:13,142|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,145|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:13,162|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 17:26:13,166|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:13,168|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,173|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:13,187|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 17:26:13,246|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:13,247|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,288|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:13,326|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 17:26:13,372|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 17:26:13,397|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:26:13,421|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 17:26:13,458|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 17:26:13,484|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:26:13,486|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,506|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 17:26:13,530|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 17:26:13,543|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:26:13,545|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:26:13,556|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 17:26:13,568|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 17:26:31,946|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:26:35,642|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:26:35,646|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:26:35,651|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:26:35,657|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:26:35,663|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:43:12,836|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:12,851|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 17:43:12,858|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:12,859|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:12,863|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:12,882|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 17:43:12,905|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:43:12,908|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 17:43:12,910|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:43:12,913|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 17:43:12,916|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:43:12,917|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:12,921|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:12,937|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 17:43:12,943|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 17:43:12,944|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 17:43:15,054|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 17:43:15,055|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 17:43:15,081|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:15,082|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:15,091|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:15,104|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 17:43:15,115|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 17:43:15,384|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 17:43:15,410|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 17:43:15,419|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 17:43:15,440|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:15,441|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:15,445|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 17:43:15,446|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 17:43:15,450|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:15,464|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 17:43:15,466|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 17:43:15,742|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:43:15,756|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:43:15,795|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:43:15,812|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:43:15,816|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 17:43:15,817|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 17:43:16,002|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:43:16,016|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:43:16,058|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:43:16,076|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:43:16,085|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 17:43:16,089|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:43:16,091|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,103|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:16,119|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 17:43:16,134|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:43:16,140|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 17:43:16,155|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:43:16,156|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,159|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:16,173|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 17:43:16,176|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:16,177|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,180|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:16,193|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 17:43:16,198|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:16,199|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,204|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:16,221|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 17:43:16,271|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:16,272|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,316|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:16,352|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 17:43:16,382|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 17:43:16,406|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:43:16,442|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 17:43:16,481|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 17:43:16,501|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:43:16,503|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,520|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:16,540|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 17:43:16,551|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:16,552|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:16,561|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 17:43:16,569|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 17:43:48,488|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:48,501|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 17:43:48,509|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:48,511|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:48,515|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:48,532|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 17:43:48,554|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:43:48,557|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 17:43:48,560|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:43:48,564|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 17:43:48,567|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:43:48,569|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:48,572|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:48,585|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 17:43:48,592|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 17:43:48,593|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 17:43:50,694|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 17:43:50,696|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 17:43:50,728|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:50,729|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:50,738|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:50,750|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 17:43:50,764|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 17:43:51,036|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 17:43:51,065|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 17:43:51,074|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 17:43:51,099|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:51,100|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:51,103|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 17:43:51,105|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 17:43:51,109|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:51,124|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 17:43:51,125|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 17:43:51,398|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:43:51,415|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:43:51,462|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:43:51,477|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:43:51,479|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 17:43:51,481|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 17:43:51,660|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:43:51,675|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:43:51,734|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:43:51,751|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:43:51,758|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 17:43:51,763|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:43:51,764|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:51,777|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:51,800|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 17:43:51,817|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:43:51,824|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 17:43:51,838|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:43:51,840|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:51,843|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:51,855|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 17:43:51,859|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:51,860|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:51,862|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:51,875|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 17:43:51,880|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:51,881|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:51,885|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:51,901|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 17:43:51,955|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:51,956|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:51,984|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:52,017|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 17:43:52,049|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 17:43:52,067|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:43:52,092|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 17:43:52,122|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 17:43:52,143|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:43:52,144|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:52,156|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 17:43:52,173|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 17:43:52,184|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:43:52,185|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:43:52,194|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 17:43:52,202|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 17:44:10,578|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:44:14,357|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:44:14,361|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:44:14,367|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:44:14,373|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:44:14,378|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:56:23,518|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:23,531|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 17:56:23,540|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:23,542|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:23,545|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:23,559|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 17:56:23,582|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:56:23,585|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 17:56:23,588|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:56:23,593|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 17:56:23,596|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:56:23,598|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:23,601|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:23,619|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 17:56:23,627|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 17:56:23,628|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 17:56:25,816|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 17:56:25,818|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 17:56:25,853|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:25,854|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:25,864|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:25,877|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 17:56:25,890|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 17:56:26,163|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 17:56:26,195|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 17:56:26,205|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 17:56:26,228|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:26,229|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:26,232|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 17:56:26,234|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 17:56:26,237|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:26,252|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 17:56:26,253|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 17:56:26,521|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:56:26,535|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:56:26,579|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:56:26,597|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:56:26,600|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 17:56:26,602|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 17:56:26,801|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:56:26,819|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:56:26,859|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:56:26,874|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:56:26,881|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 17:56:26,886|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:56:26,887|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:26,898|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:26,915|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 17:56:26,930|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:56:26,937|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 17:56:26,952|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:56:26,953|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:26,956|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:26,968|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 17:56:26,971|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:26,973|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:26,976|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:26,987|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 17:56:26,992|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:26,993|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:26,998|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:27,011|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 17:56:27,066|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:27,067|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:27,107|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:27,140|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 17:56:27,173|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 17:56:27,193|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:56:27,218|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 17:56:27,249|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 17:56:27,269|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:56:27,271|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:27,287|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 17:56:27,305|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 17:56:27,315|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:56:27,316|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:56:27,326|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 17:56:27,336|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 17:56:45,407|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:56:49,728|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:56:49,734|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:56:49,740|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:56:49,746|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:56:49,753|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:57:57,396|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 17:57:57,409|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 17:57:57,419|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:57:57,421|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:57:57,423|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 17:57:57,435|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 17:57:57,461|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:57:57,463|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 17:57:57,466|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:57:57,471|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 17:57:57,473|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:57:57,475|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:57:57,478|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:57:57,493|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 17:57:57,498|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 17:57:57,499|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 17:58:00,324|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 17:58:00,327|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 17:58:00,356|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:58:00,359|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:00,368|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:00,384|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 17:58:00,403|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 17:58:00,728|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 17:58:00,761|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 17:58:00,769|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 17:58:00,796|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:58:00,799|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:00,803|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 17:58:00,804|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 17:58:00,809|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:00,828|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 17:58:00,829|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 17:58:01,099|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:58:01,120|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:58:01,167|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 17:58:01,182|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 17:58:01,185|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 17:58:01,188|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 17:58:01,525|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 17:58:01,542|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:58:01,588|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 17:58:01,603|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 17:58:01,613|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 17:58:01,617|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 17:58:01,618|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:01,630|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:01,653|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 17:58:01,672|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:58:01,681|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 17:58:01,697|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:58:01,699|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:01,702|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:01,719|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 17:58:01,723|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:58:01,724|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:01,726|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:01,740|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 17:58:01,745|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:58:01,747|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:01,753|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:01,768|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 17:58:01,843|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:58:01,845|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:01,879|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:01,921|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 17:58:01,960|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 17:58:01,989|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 17:58:02,015|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 17:58:02,059|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 17:58:02,089|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 17:58:02,090|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:02,101|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 17:58:02,119|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 17:58:02,132|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 17:58:02,134|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 17:58:02,143|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 17:58:02,156|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 17:58:27,823|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:58:32,378|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:58:32,384|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:58:32,389|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:58:32,395|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 17:58:32,400|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:02:14,888|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:14,901|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 18:02:14,909|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:14,911|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:14,915|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:14,930|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 18:02:14,932|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:02:14,935|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 18:02:14,957|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:02:14,962|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 18:02:14,966|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:02:14,968|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:14,971|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:14,987|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 18:02:14,994|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 18:02:14,995|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 18:02:17,196|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 18:02:17,197|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 18:02:17,222|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:17,224|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:17,233|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:17,247|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 18:02:17,257|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 18:02:17,550|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 18:02:17,577|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 18:02:17,586|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 18:02:17,610|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:17,611|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:17,614|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 18:02:17,616|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 18:02:17,619|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:17,637|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 18:02:17,639|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 18:02:17,852|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:02:17,866|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:02:17,903|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:02:17,922|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:02:17,925|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 18:02:17,926|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 18:02:18,194|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:02:18,212|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:02:18,251|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:02:18,266|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:02:18,274|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 18:02:18,279|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:02:18,280|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,293|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:18,315|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 18:02:18,332|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:02:18,340|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 18:02:18,359|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:02:18,360|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,364|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:18,379|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 18:02:18,382|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:18,383|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,386|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:18,400|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 18:02:18,405|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:18,406|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,411|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:18,424|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 18:02:18,475|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:18,476|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,511|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:18,542|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 18:02:18,572|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 18:02:18,592|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:02:18,619|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 18:02:18,654|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 18:02:18,676|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:02:18,678|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,695|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 18:02:18,713|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 18:02:18,724|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:02:18,725|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:02:18,733|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 18:02:18,743|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 18:02:40,608|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:02:45,093|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:02:45,101|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:02:45,107|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:02:45,113|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:02:45,119|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:05:34,354|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:34,368|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 18:05:34,377|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:34,379|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:34,383|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:34,395|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 18:05:34,416|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:05:34,420|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 18:05:34,423|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:05:34,426|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 18:05:34,429|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:05:34,430|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:34,435|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:34,451|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 18:05:34,456|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 18:05:34,457|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 18:05:36,831|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 18:05:36,833|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 18:05:36,871|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:36,873|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:36,889|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:36,926|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 18:05:36,937|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 18:05:37,214|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 18:05:37,243|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 18:05:37,253|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 18:05:37,271|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:37,273|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:37,276|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 18:05:37,277|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 18:05:37,281|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:37,297|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 18:05:37,299|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 18:05:37,667|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:05:37,693|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:05:37,773|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:05:37,799|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:05:37,803|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 18:05:37,808|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 18:05:38,182|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:05:38,208|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:05:38,281|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:05:38,304|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:05:38,314|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 18:05:38,321|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:05:38,323|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:38,340|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:38,368|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 18:05:38,394|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:05:38,405|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 18:05:38,430|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:05:38,432|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:38,435|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:38,453|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 18:05:38,457|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:38,459|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:38,461|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:38,482|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 18:05:38,488|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:38,489|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:38,496|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:38,520|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 18:05:38,619|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:38,621|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:38,675|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:38,731|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 18:05:38,782|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 18:05:38,812|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:05:38,849|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 18:05:38,911|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 18:05:38,942|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:05:38,944|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:38,968|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 18:05:38,992|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 18:05:39,005|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:05:39,007|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:05:39,019|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 18:05:39,032|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 18:06:00,986|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:06:08,476|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:06:08,483|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:06:08,490|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:06:08,498|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:06:08,506|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:11:29,524|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:29,537|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 18:11:29,543|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:29,544|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:29,547|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:29,558|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 18:11:29,577|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:11:29,580|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 18:11:29,583|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:11:29,585|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 18:11:29,588|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:11:29,589|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:29,593|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:29,603|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 18:11:29,608|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 18:11:29,610|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 18:11:31,777|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 18:11:31,779|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 18:11:31,811|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:31,813|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:31,824|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:31,839|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 18:11:31,849|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 18:11:32,113|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 18:11:32,142|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 18:11:32,151|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 18:11:32,168|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:32,169|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:32,172|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 18:11:32,174|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 18:11:32,177|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:32,192|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 18:11:32,192|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 18:11:32,458|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:11:32,470|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:11:32,507|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:11:32,519|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:11:32,522|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 18:11:32,523|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 18:11:32,698|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:11:32,723|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:11:32,757|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:11:32,771|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:11:32,777|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 18:11:32,781|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:11:32,782|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:32,793|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:32,808|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 18:11:32,821|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:11:32,828|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 18:11:32,841|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:11:32,842|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:32,845|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:32,856|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 18:11:32,859|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:32,860|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:32,862|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:32,873|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 18:11:32,877|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:32,879|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:32,883|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:32,895|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 18:11:32,945|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:32,946|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:32,980|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:33,012|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 18:11:33,045|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 18:11:33,064|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:11:33,085|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 18:11:33,114|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 18:11:33,133|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:11:33,134|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:33,142|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 18:11:33,156|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 18:11:33,165|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:11:33,166|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:11:33,170|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 18:11:33,176|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 18:11:51,579|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:11:55,882|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:11:55,887|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:11:55,892|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:11:55,898|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:11:55,904|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 18:14:54,659|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:54,672|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 18:14:54,681|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:54,683|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:54,686|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:54,708|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 18:14:54,734|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:14:54,737|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 18:14:54,739|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:14:54,742|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 18:14:54,745|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:14:54,748|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:54,752|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:54,767|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 18:14:54,774|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 18:14:54,775|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 18:14:57,213|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 0.1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l2', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 18:14:57,214|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 18:14:57,244|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:57,245|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:57,257|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:57,273|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 18:14:57,283|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 18:14:57,577|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 18:14:57,606|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 18:14:57,616|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 18:14:57,637|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:57,639|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:57,644|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 18:14:57,646|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 18:14:57,649|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:57,663|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 18:14:57,665|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 18:14:57,969|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 1.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:14:57,983|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:14:58,025|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 1.0
+[2020-02-29 18:14:58,043|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 18:14:58,047|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 18:14:58,049|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 18:14:58,250|causallift.nodes.model_for_each|INFO] ### Best parameters of the model trained using samples with observational Treatment: 0.0 
+ {'base_score': 0.5, 'booster': 'gbtree', 'colsample_bylevel': 1, 'colsample_bytree': 1, 'gamma': 0, 'learning_rate': 0.1, 'max_delta_step': 0, 'max_depth': 3, 'min_child_weight': 1, 'missing': None, 'n_estimators': 100, 'n_jobs': -1, 'nthread': None, 'objective': 'binary:logistic', 'random_state': 0, 'reg_alpha': 0, 'reg_lambda': 1, 'scale_pos_weight': 1, 'subsample': 1, 'verbose': 0}
+[2020-02-29 18:14:58,264|causallift.nodes.model_for_each|INFO] 
+### Feature importances of the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:14:58,307|causallift.nodes.model_for_each|INFO] 
+### Outcome estimated by the model trained using samples with observational Treatment: 0.0
+[2020-02-29 18:14:58,323|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 18:14:58,332|kedro.pipeline.node|INFO] Running node: bundle_treated_and_untreated_models([treated__model_dict,untreated__model_dict]) -> [uplift_models_dict]
+[2020-02-29 18:14:58,338|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 18:14:58,340|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,357|causallift.context.flexible_context|INFO] Run pipeline (tags: ['321_predict_proba'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:58,377|kedro.pipeline.node|INFO] Running node: model_for_untreated_predict_proba([args,df_01,uplift_models_dict]) -> [untreated__proba]
+[2020-02-29 18:14:58,397|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:14:58,407|kedro.pipeline.node|INFO] Running node: model_for_treated_predict_proba([args,df_01,uplift_models_dict]) -> [treated__proba]
+[2020-02-29 18:14:58,424|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:14:58,426|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,429|causallift.context.flexible_context|INFO] Run pipeline (tags: ['411_compute_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:58,447|kedro.pipeline.node|INFO] Running node: compute_cate([treated__proba,untreated__proba]) -> [cate_estimated]
+[2020-02-29 18:14:58,451|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:58,453|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,457|causallift.context.flexible_context|INFO] Run pipeline (tags: ['421_add_cate_to_df'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:58,476|kedro.pipeline.node|INFO] Running node: add_cate_to_df([args,cate_estimated,df_01]) -> [df_02]
+[2020-02-29 18:14:58,480|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:58,482|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,488|causallift.context.flexible_context|INFO] Run pipeline (tags: ['511_recommend_by_cate'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:58,504|kedro.pipeline.node|INFO] Running node: recommend_by_cate([args,df_02,treatment_fractions]) -> [df_03]
+[2020-02-29 18:14:58,570|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:58,572|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,601|causallift.context.flexible_context|INFO] Run pipeline (tags: ['521_simulate_recommendation'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:58,635|kedro.pipeline.node|INFO] Running node: model_for_treated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [treated__sim_eval_df]
+[2020-02-29 18:14:58,675|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 1.0 by the uplift model:
+[2020-02-29 18:14:58,699|kedro.runner.sequential_runner|INFO] Completed 1 out of 2 tasks
+[2020-02-29 18:14:58,729|kedro.pipeline.node|INFO] Running node: model_for_untreated_simulate_recommendation([args,df_03,uplift_models_dict]) -> [untreated__sim_eval_df]
+[2020-02-29 18:14:58,765|causallift.nodes.model_for_each|INFO] 
+### Simulated outcome of samples recommended to be treatment: 0.0 by the uplift model:
+[2020-02-29 18:14:58,790|kedro.runner.sequential_runner|INFO] Completed 2 out of 2 tasks
+[2020-02-29 18:14:58,792|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,800|causallift.context.flexible_context|INFO] Run pipeline (tags: ['531_estimate_effect'], SequentialRunner, only_missing: False)
+[2020-02-29 18:14:58,816|kedro.pipeline.node|INFO] Running node: estimate_effect([treated__sim_eval_df,untreated__sim_eval_df]) -> [estimated_effect_df]
+[2020-02-29 18:14:58,827|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 18:14:58,828|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 18:14:58,840|causallift.causal_lift|INFO] 
+### Treated samples without and with uplift model:
+[2020-02-29 18:14:58,849|causallift.causal_lift|INFO] 
+### Untreated samples without and with uplift model:
+[2020-02-29 18:15:20,099|matplotlib.legend|WARNING] No handles with labels found to put in legend.
+[2020-02-29 19:26:00,681|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:00,760|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 19:26:00,784|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 19:26:00,787|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:00,800|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:00,846|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 19:26:00,906|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 19:26:00,912|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 19:26:00,919|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 19:26:00,947|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 19:26:00,952|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 19:26:00,955|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:00,964|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:01,008|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 19:26:01,021|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 19:26:01,023|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 19:26:03,567|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 1, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l1', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 19:26:03,580|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 19:26:03,654|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 19:26:03,656|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:03,678|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:03,710|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 19:26:03,746|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 19:26:04,152|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 19:26:04,211|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 19:26:04,230|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 19:26:04,298|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 19:26:04,301|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:04,311|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.685069008782936
+[2020-02-29 19:26:04,314|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.685
+[2020-02-29 19:26:04,321|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:04,364|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-02-29 19:26:04,367|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-02-29 19:26:04,416|causallift.nodes.model_for_each|WARNING] [Warning] Propensity scores above 0.99 were clipped.
+[2020-02-29 19:26:04,589|kedro.pipeline.node|ERROR] Node `model_for_treated_fit([args,df_01]) -> [treated__model_dict]` failed with error: 
+DataFrame.dtypes for data must be int, float or bool.
+                Did not expect the data types in fields TransformedOutcome
+[2020-02-29 19:26:04,593|kedro.runner.sequential_runner|WARNING] There are 3 nodes that have not run.
+You can resume the pipeline run by adding the following argument to your previous command:
+
+[2020-02-29 19:26:05,133|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:05,157|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-02-29 19:26:05,171|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 19:26:05,174|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:05,180|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:05,213|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-02-29 19:26:05,260|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-02-29 19:26:05,265|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-02-29 19:26:05,270|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-02-29 19:26:05,276|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-02-29 19:26:05,281|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-02-29 19:26:05,283|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:05,291|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:05,327|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-02-29 19:26:05,338|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-02-29 19:26:05,341|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-02-29 19:26:07,380|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 10, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l1', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-02-29 19:26:07,382|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-02-29 19:26:07,468|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 19:26:07,471|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:07,487|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:07,513|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-02-29 19:26:07,544|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-02-29 19:26:07,896|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-02-29 19:26:07,929|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-02-29 19:26:07,941|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-02-29 19:26:07,966|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-02-29 19:26:07,968|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-02-29 19:26:07,972|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.7168367346938775
+[2020-02-29 19:26:07,974|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.717687074829932
+[2020-02-29 19:26:07,980|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-02-29 19:26:07,999|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-02-29 19:26:08,001|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-02-29 19:26:08,028|causallift.nodes.model_for_each|WARNING] [Warning] Propensity scores below 0.01 were clipped.
+[2020-02-29 19:26:08,091|kedro.pipeline.node|ERROR] Node `model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]` failed with error: 
+DataFrame.dtypes for data must be int, float or bool.
+                Did not expect the data types in fields TransformedOutcome
+[2020-02-29 19:26:08,094|kedro.runner.sequential_runner|WARNING] There are 3 nodes that have not run.
+You can resume the pipeline run by adding the following argument to your previous command:
+
