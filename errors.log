@@ -4,3 +4,6 @@ DataFrame.dtypes for data must be int, float or bool.
 [2020-02-29 19:26:08,091|kedro.pipeline.node|ERROR] Node `model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]` failed with error: 
 DataFrame.dtypes for data must be int, float or bool.
                 Did not expect the data types in fields TransformedOutcome
+[2020-03-02 17:51:33,519|kedro.pipeline.node|ERROR] Node `model_for_treated_fit([args,df_01]) -> [treated__model_dict]` failed with error: 
+DataFrame.dtypes for data must be int, float or bool.
+                Did not expect the data types in fields TransformedOutcome
