@@ -1565,3 +1565,150 @@ DataFrame.dtypes for data must be int, float or bool.
 [2020-03-02 17:51:33,523|kedro.runner.sequential_runner|WARNING] There are 3 nodes that have not run.
 You can resume the pipeline run by adding the following argument to your previous command:
 
+[2020-03-03 11:25:41,861|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-03-03 11:25:41,898|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-03-03 11:25:41,911|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:25:41,913|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:25:41,918|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-03-03 11:25:41,948|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-03-03 11:25:41,952|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-03-03 11:25:41,957|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-03-03 11:25:42,002|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-03-03 11:25:42,013|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-03-03 11:25:42,017|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-03-03 11:25:42,020|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:25:42,029|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-03-03 11:25:42,066|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-03-03 11:25:42,077|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-03-03 11:25:42,079|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-03-03 11:25:44,338|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 10, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l1', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-03-03 11:25:44,340|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-03-03 11:25:44,440|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:25:44,443|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:25:44,450|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-03-03 11:25:44,498|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-03-03 11:25:44,540|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-03-03 11:25:44,992|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-03-03 11:25:45,093|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-03-03 11:25:45,116|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-03-03 11:25:45,156|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:25:45,159|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:25:45,165|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.7168367346938775
+[2020-03-03 11:25:45,168|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.717687074829932
+[2020-03-03 11:25:45,175|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-03-03 11:25:45,204|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-03-03 11:25:45,206|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-03-03 11:25:45,247|causallift.nodes.model_for_each|WARNING] [Warning] Propensity scores above 0.99 were clipped.
+[2020-03-03 11:25:45,355|kedro.pipeline.node|ERROR] Node `model_for_treated_fit([args,df_01]) -> [treated__model_dict]` failed with error: 
+DataFrame.dtypes for data must be int, float or bool.
+                Did not expect the data types in fields TransformedOutcome
+[2020-03-03 11:25:45,359|kedro.runner.sequential_runner|WARNING] There are 3 nodes that have not run.
+You can resume the pipeline run by adding the following argument to your previous command:
+
+[2020-03-03 11:32:50,240|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-03-03 11:32:50,285|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-03-03 11:32:50,306|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:32:50,309|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:32:50,316|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-03-03 11:32:50,358|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-03-03 11:32:50,402|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-03-03 11:32:50,407|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-03-03 11:32:50,412|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-03-03 11:32:50,416|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-03-03 11:32:50,421|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-03-03 11:32:50,425|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:32:50,433|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-03-03 11:32:50,455|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-03-03 11:32:50,464|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-03-03 11:32:50,466|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-03-03 11:32:52,966|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 10, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l1', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-03-03 11:32:52,968|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-03-03 11:32:53,058|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:32:53,061|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:32:53,067|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-03-03 11:32:53,106|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-03-03 11:32:53,147|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-03-03 11:32:53,566|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-03-03 11:32:53,624|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-03-03 11:32:53,642|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-03-03 11:32:53,686|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:32:53,689|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:32:53,696|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.7168367346938775
+[2020-03-03 11:32:53,700|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.717687074829932
+[2020-03-03 11:32:53,707|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-03-03 11:32:53,749|kedro.pipeline.node|INFO] Running node: model_for_treated_fit([args,df_01]) -> [treated__model_dict]
+[2020-03-03 11:32:53,751|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 1.0
+[2020-03-03 11:32:53,798|causallift.nodes.model_for_each|WARNING] [Warning] Propensity scores above 0.99 were clipped.
+[2020-03-03 11:32:53,899|kedro.pipeline.node|ERROR] Node `model_for_treated_fit([args,df_01]) -> [treated__model_dict]` failed with error: 
+DataFrame.dtypes for data must be int, float or bool.
+                Did not expect the data types in fields TransformedOutcome
+[2020-03-03 11:32:53,903|kedro.runner.sequential_runner|WARNING] There are 3 nodes that have not run.
+You can resume the pipeline run by adding the following argument to your previous command:
+
+[2020-03-03 11:59:03,237|causallift.context.flexible_context|INFO] Run pipeline (tags: ['011_bundle_train_and_test_data'], SequentialRunner, only_missing: False)
+[2020-03-03 11:59:03,270|kedro.pipeline.node|INFO] Running node: bundle_train_and_test_data([args_raw,test_df,train_df]) -> [df_00]
+[2020-03-03 11:59:03,284|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:59:03,287|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:59:03,297|causallift.context.flexible_context|INFO] Run pipeline (tags: ['121_prepare_args', '131_treatment_fractions_', '141_initialize_model'], SequentialRunner, only_missing: False)
+[2020-03-03 11:59:03,327|kedro.pipeline.node|INFO] Running node: impute_cols_features([args_raw,df_00]) -> [args_intermediate]
+[2020-03-03 11:59:03,337|kedro.runner.sequential_runner|INFO] Completed 1 out of 3 tasks
+[2020-03-03 11:59:03,344|kedro.pipeline.node|INFO] Running node: treatment_fractions_([args_raw,df_00]) -> [treatment_fractions]
+[2020-03-03 11:59:03,398|kedro.runner.sequential_runner|INFO] Completed 2 out of 3 tasks
+[2020-03-03 11:59:03,404|kedro.pipeline.node|INFO] Running node: schedule_propensity_scoring([args_intermediate,df_00]) -> [args]
+[2020-03-03 11:59:03,410|kedro.runner.sequential_runner|INFO] Completed 3 out of 3 tasks
+[2020-03-03 11:59:03,414|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:59:03,433|causallift.context.flexible_context|INFO] Run pipeline (tags: ['211_fit_propensity'], SequentialRunner, only_missing: False)
+[2020-03-03 11:59:03,470|kedro.pipeline.node|INFO] Running node: fit_propensity([args,df_00]) -> [propensity_model]
+[2020-03-03 11:59:03,483|causallift.nodes.estimate_propensity|INFO] ## Propensity scores will be estimated by logistic regression.
+[2020-03-03 11:59:03,486|causallift.nodes.estimate_propensity|INFO] ### Parameters for grid search of Logistic regression:
+{'search_cv': 'sklearn.model_selection.GridSearchCV', 'estimator': 'sklearn.linear_model.LogisticRegression', 'scoring': None, 'cv': 3, 'return_train_score': False, 'n_jobs': -1, 'param_grid': {'random_state': [0], 'C': [0.1, 1, 10], 'class_weight': [None], 'dual': [False], 'fit_intercept': [True], 'intercept_scaling': [1], 'max_iter': [100], 'multi_class': ['ovr'], 'n_jobs': [1], 'penalty': ['l1', 'l2'], 'solver': ['liblinear'], 'tol': [0.0001], 'warm_start': [False]}}
+[2020-03-03 11:59:05,956|causallift.nodes.estimate_propensity|INFO] ### Best parameter for logistic regression:
+{'C': 10, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'max_iter': 100, 'multi_class': 'ovr', 'n_jobs': 1, 'penalty': 'l1', 'random_state': 0, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': False}
+[2020-03-03 11:59:05,958|causallift.nodes.estimate_propensity|INFO] 
+## Coefficients of logistic regression:
+[2020-03-03 11:59:06,044|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:59:06,045|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:59:06,050|causallift.context.flexible_context|INFO] Run pipeline (tags: ['221_estimate_propensity'], SequentialRunner, only_missing: False)
+[2020-03-03 11:59:06,084|kedro.pipeline.node|INFO] Running node: estimate_propensity([args,df_00,propensity_model]) -> [df_01]
+[2020-03-03 11:59:06,140|causallift.nodes.estimate_propensity|INFO] 
+### Histogram of propensity score for train and test data:
+[2020-03-03 11:59:06,573|causallift.nodes.estimate_propensity|INFO] 
+### Score Table for logistic regression to calculate propensity score:
+[2020-03-03 11:59:06,626|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Train:
+[2020-03-03 11:59:06,645|causallift.nodes.estimate_propensity|INFO] 
+### Confusion Matrix for Test:
+[2020-03-03 11:59:06,688|kedro.runner.sequential_runner|INFO] Completed 1 out of 1 tasks
+[2020-03-03 11:59:06,691|kedro.runner.sequential_runner|INFO] Pipeline execution completed successfully.
+[2020-03-03 11:59:06,698|causallift.causal_lift|INFO] ### Treatment fraction in train dataset: 0.7168367346938775
+[2020-03-03 11:59:06,701|causallift.causal_lift|INFO] ### Treatment fraction in test dataset: 0.717687074829932
+[2020-03-03 11:59:06,709|causallift.context.flexible_context|INFO] Run pipeline (tags: ['311_fit', '312_bundle_2_models'], SequentialRunner, only_missing: False)
+[2020-03-03 11:59:06,762|kedro.pipeline.node|INFO] Running node: model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]
+[2020-03-03 11:59:06,765|causallift.nodes.model_for_each|INFO] 
+
+## Model for Treatment = 0.0
+[2020-03-03 11:59:06,821|causallift.nodes.model_for_each|WARNING] [Warning] Propensity scores below 0.01 were clipped.
+[2020-03-03 11:59:06,918|kedro.pipeline.node|ERROR] Node `model_for_untreated_fit([args,df_01]) -> [untreated__model_dict]` failed with error: 
+DataFrame.dtypes for data must be int, float or bool.
+                Did not expect the data types in fields TransformedOutcome
+[2020-03-03 11:59:06,922|kedro.runner.sequential_runner|WARNING] There are 3 nodes that have not run.
+You can resume the pipeline run by adding the following argument to your previous command:
+
