@@ -1,8 +1,2 @@
-<h1>Uplift Modelling for Employee Retention Campaign</h1>
-<br><h2>Jupyter Notebook file for:</h2>
-<br>Dataset 1 = Revision_HR_Uplift.ipynb 
-(source: https://www.kaggle.com/giripujar/hr-analytics)
-<br>Dataset 2 = Revision_IBM_Uplift.ipynb 
-(source: https://www.kaggle.com/pavansubhasht/ibm-hr-analytics-attrition-dataset)
-<br>Dataset 3 = Turnover Uplift.ipynb 
-(source: https://edwvb.blogspot.com/2017/10/employee-turnover-how-to-predict-individual-risks-of-quitting.html)
+***Uplift modeling VS conventional predictive model: A reliable machine learning model to solve employee turnover***
+Employee turnover is the loss of talent in the workforce that can be costly for a company. Uplift modeling is one of the prescriptive methods in machine learning models that not only predict an outcome but also prescribe a solution. Recent studies are focusing on the conventional predictive models to predict employee turnover rather than uplift modeling. In this research, we analyze whether the uplifting model has better performance than the conventional predictive model in solving employee turnover. Performance comparison between the two methods was carried out by experimentation using two synthetic datasets and one real dataset. The results show that despite the conventional predictive model yields an average prediction accuracy of 84%; it only yields a success rate of 50% to target the right employee with a retention program on the three datasets. By contrast, the uplift model only yields an average accuracy of 67% but yields a consistent success rate of 100% in targeting the right employee with a retention program.
