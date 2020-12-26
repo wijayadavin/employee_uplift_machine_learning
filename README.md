@@ -1,5 +1,5 @@
 ## Uplift modeling VS conventional predictive model: A reliable machine learning model to solve employee turnover
-
+![](https://i.ibb.co/4PFKrfw/cover-03.jpg)
 ### Project file: [English version](eng_uplift_vs_turnover.ipynb) | [Indonesian version](id_uplift_vs_turnover.ipynb) | [Kaggle](https://www.kaggle.com/davinwijaya/why-you-should-start-using-uplift-modeling)
 
 ### Background
