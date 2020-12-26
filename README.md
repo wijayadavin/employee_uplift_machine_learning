@@ -12,4 +12,4 @@ In this research, we analyze whether the uplifting model has better performance 
 Performance comparison between the two methods was carried out by experimentation using two synthetic datasets and one real dataset.<br>
 
 ### Results
-The results show that despite the conventional predictive model yields an average prediction accuracy of 84%; it only yields a success rate of 50% to target the right employee with a retention program on the three datasets. By contrast, the uplift model only yields an average accuracy of 67% but yields a consistent success rate of 100% in targeting the right employee with a retention program.
+The results show that despite the conventional predictive model yields an average prediction accuracy of 84%; it only yields a success rate of 50% (3 success & 3 failed) to target the right employee with a retention program on the three datasets and six experiments. By contrast, the uplift model only yields an average accuracy of 67% but yields a consistent success rate of 100% in targeting the right employee with a retention program.
