@@ -1,6 +1,6 @@
 ## Uplift modeling VS conventional predictive model: A reliable machine learning model to solve employee turnover
 
-### Project file: [English version](eng_uplift_vs_turnover.ipynb) | [Indonesian version](id_uplift_vs_turnover.ipynb)
+### Project file: [English version](eng_uplift_vs_turnover.ipynb) | [Indonesian version](id_uplift_vs_turnover.ipynb) | [Kaggle](https://www.kaggle.com/davinwijaya/why-you-should-start-using-uplift-modeling)
 
 ### Background
 Employee turnover is the loss of talent in the workforce that can be costly for a company. Uplift modeling is one of the prescriptive methods in machine learning models that not only predict an outcome but also prescribe a solution. Recent studies are focusing on the conventional predictive models to predict employee turnover rather than uplift modeling.<br>
